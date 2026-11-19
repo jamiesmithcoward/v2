@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Should I Join This?</title>
+
+<style>
+  :root{
+    --bg:#f4f5f7;
+    --card:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --primary:#111827;
+    --soft:#f8fafc;
+    --good:#ecfdf5;
+    --warn:#fffbeb;
+    --bad:#fef2f2;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+
+  .wrap{
+    max-width:760px;
+    margin:35px auto;
+    padding:20px;
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:18px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+  }
+
+  h1,h2,h3{margin-top:0}
+  h1{font-size:32px}
+  h2{font-size:24px}
+  h3{font-size:18px;margin-top:24px}
+
+  p{line-height:1.6}
+
+  .muted{
+    color:var(--muted);
+    font-size:14px;
+  }
+
+  .progress{
+    height:8px;
+    background:#e5e7eb;
+    border-radius:999px;
+    overflow:hidden;
+  }
+
+  .bar{
+    height:100%;
+    width:0%;
+    background:var(--primary);
+    transition:.25s ease;
+  }
+
+  .step{
+    font-size:13px;
+    color:var(--muted);
+    margin:8px 0 24px;
+  }
+
+  label{
+    display:block;
+    margin:16px 0 7px;
+    font-weight:700;
+  }
+
+  input,select,textarea{
+    width:100%;
+    padding:12px 13px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    font-size:16px;
+    background:#fff;
+  }
+
+  textarea{
+    min-height:95px;
+    resize:vertical;
+  }
+
+  .primary{
+    width:100%;
+    padding:14px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    background:var(--primary);
+    color:#fff;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+  }
+
+  .primary:hover{opacity:.92}
+
+  .back{
+    border:none;
+    background:none;
+    color:var(--muted);
+    text-decoration:underline;
+    padding:0;
+    margin-bottom:14px;
+    cursor:pointer;
+  }
+
+  .hidden{display:none}
+
+  .box{
+    background:var(--soft);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+    margin:14px 0;
+  }
+
+  .check{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:11px 12px;
+    margin:8px 0;
+    font-weight:400;
+  }
+
+  .check input{
+    width:auto;
+    margin-top:3px;
+  }
+
+  .result-card{
+    border-radius:12px;
+    padding:15px;
+    margin:12px 0;
+    border:1px solid var(--line);
+  }
+
+  .good{background:var(--good)}
+  .warn{background:var(--warn)}
+  .bad{background:var(--bad)}
+
+  .result-title{
+    font-weight:800;
+    margin-bottom:5px;
+  }
+
+  .overall{
+    font-size:30px;
+    font-weight:800;
+    margin:10px 0 6px;
+  }
+
+  .summary{
+    background:#f8fafc;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+    margin:14px 0;
+  }
+
+  ul{
+    line-height:1.6;
+    padding-left:22px;
+  }
+
+  @media(max-width:600px){
+    .wrap{margin:15px auto}
+    .card{padding:22px}
+    h1{font-size:28px}
+  }
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+  <div class="card">
+
+    <div class="progress">
+      <div id="bar" class="bar"></div>
+    </div>
+    <div id="stepText" class="step">Start</div>
+
+    <!-- START -->
+    <section id="s0">
+      <h1>Should I Join This?</h1>
+      <p>
+        This tool helps you think about whether an extracurricular activity fits your goals,
+        available time, and reasons for joining.
+      </p>
+      <p class="muted">
+        It does not make the decision for you. It helps you reflect before committing.
+      </p>
+      <button class="primary" onclick="go(1)">Start</button>
+    </section>
+
+    <!-- ACTIVITY -->
+    <section id="s1" class="hidden">
+      <button class="back" onclick="go(0)">← Back</button>
+      <h2>1. Choose the activity</h2>
+
+      <label>Activity name</label>
+      <input id="activityName" placeholder="Example: Marketing Club">
+
+      <label>Activity type</label>
+      <select id="activityType">
+        <option value="">Select one</option>
+        <option>Hobby / fun club</option>
+        <option>Major-related club</option>
+        <option>Student Union / student organization</option>
+        <option>Volunteer activity</option>
+        <option>Church / worship team</option>
+        <option>TA / academic activity</option>
+        <option>Career program / competition</option>
+        <option>Other</option>
+      </select>
+
+      <label>Expected hours per week</label>
+      <input id="activityHours" type="number" min="0" step="0.5" placeholder="Example: 4">
+
+      <label>Expected commitment length</label>
+      <select id="duration">
+        <option value="">Select one</option>
+        <option>Less than one month</option>
+        <option>One semester</option>
+        <option>One year</option>
+        <option>More than one year</option>
+      </select>
+
+      <button class="primary" onclick="saveActivity()">Next</button>
+    </section>
+
+    <!-- GOALS -->
+    <section id="s2" class="hidden">
+      <button class="back" onclick="go(1)">← Back</button>
+      <h2>2. What are your main goals?</h2>
+      <p class="muted">Choose up to 3 goals that matter most to you right now.</p>
+
+      <div id="goalChoices">
+        <label class="check"><input type="checkbox" value="Improve career skills">Improve career skills</label>
+        <label class="check"><input type="checkbox" value="Make friends">Make friends</label>
+        <label class="check"><input type="checkbox" value="Develop leadership">Develop leadership</label>
+        <label class="check"><input type="checkbox" value="Serve others">Serve others</label>
+        <label class="check"><input type="checkbox" value="Explore an interest">Explore an interest</label>
+        <label class="check"><input type="checkbox" value="Improve major knowledge">Improve major knowledge</label>
+        <label class="check"><input type="checkbox" value="Have fun">Have fun</label>
+        <label class="check"><input type="checkbox" value="Build my resume">Build my resume</label>
+      </div>
+
+      <button class="primary" onclick="saveGoals()">Next</button>
+    </section>
+
+    <!-- GOAL MATCH -->
+    <section id="s3" class="hidden">
+      <button class="back" onclick="go(2)">← Back</button>
+      <h2>3. How well does this activity support your goals?</h2>
+      <div id="goalArea"></div>
+      <button class="primary" onclick="saveGoalMatch()">Next</button>
+    </section>
+
+    <!-- CURRENT COMMITMENTS -->
+    <section id="s4" class="hidden">
+      <button class="back" onclick="go(3)">← Back</button>
+      <h2>4. What are you already balancing?</h2>
+
+      <label>How many extracurricular activities are you already doing?</label>
+      <input id="currentActivities" type="number" min="0" placeholder="Example: 2">
+
+      <label>How many hours per week do your current activities take?</label>
+      <input id="currentHours" type="number" min="0" step="0.5" placeholder="Example: 6">
+
+      <label>How many free hours do you realistically have left each week?</label>
+      <input id="freeHours" type="number" min="0" step="0.5" placeholder="Example: 8">
+
+      <p class="muted">
+        Think about study time, sleep, meals, current activities, and personal time before deciding what counts as free.
+      </p>
+
+      <button class="primary" onclick="saveTime()">Next</button>
+    </section>
+
+    <!-- MOTIVATION -->
+    <section id="s5" class="hidden">
+      <button class="back" onclick="go(4)">← Back</button>
+      <h2>5. Why do you want to join?</h2>
+      <p class="muted">Select all that apply.</p>
+
+      <div id="motives">
+        <label class="check"><input type="checkbox" value="interest">I genuinely enjoy it</label>
+        <label class="check"><input type="checkbox" value="goal">It matches my goals</label>
+        <label class="check"><input type="checkbox" value="learning">I want to learn something</label>
+        <label class="check"><input type="checkbox" value="friends">My friends are joining</label>
+        <label class="check"><input type="checkbox" value="career">I think it will help my career</label>
+        <label class="check"><input type="checkbox" value="notEnough">I feel like I am not doing enough</label>
+        <label class="check"><input type="checkbox" value="comparison">Other students seem more involved than me</label>
+        <label class="check"><input type="checkbox" value="expectation">My parents, seniors, or others expect me to</label>
+        <label class="check"><input type="checkbox" value="fomo">I am afraid of missing an opportunity</label>
+      </div>
+
+      <button class="primary" onclick="saveMotivation()">Next</button>
+    </section>
+
+    <!-- SOCIAL COMPARISON -->
+    <section id="s6" class="hidden">
+      <button class="back" onclick="go(5)">← Back</button>
+      <h2>6. Social comparison check</h2>
+
+      <label>If your friends were not joining, would you still want to join?</label>
+      <select id="friendsQuestion">
+        <option value="">Select one</option>
+        <option value="2">Yes</option>
+        <option value="1">Maybe</option>
+        <option value="0">No</option>
+      </select>
+
+      <label>If you did not know how many activities other students were doing, would you still feel that you need this activity?</label>
+      <select id="comparisonQuestion">
+        <option value="">Select one</option>
+        <option value="2">Yes</option>
+        <option value="1">Maybe</option>
+        <option value="0">No</option>
+      </select>
+
+      <button class="primary" onclick="saveComparison()">Next</button>
+    </section>
+
+    <!-- CAREER PRESSURE -->
+    <section id="s7" class="hidden">
+      <button class="back" onclick="go(6)">← Back</button>
+      <h2>7. Career pressure check</h2>
+
+      <label>Are you joining mainly because you believe you need more activities for your future career?</label>
+      <select id="careerPressure">
+        <option value="">Select one</option>
+        <option value="0">Yes</option>
+        <option value="1">Somewhat</option>
+        <option value="2">No</option>
+      </select>
+
+      <label>Does this activity actually give you experience related to your career goals?</label>
+      <select id="careerMatch">
+        <option value="">Select one</option>
+        <option value="2">Strongly</option>
+        <option value="1">Somewhat</option>
+        <option value="0">Not really</option>
+      </select>
+
+      <button class="primary" onclick="saveCareer()">Next</button>
+    </section>
+
+    <!-- PERSONAL LIMIT -->
+    <section id="s8" class="hidden">
+      <button class="back" onclick="go(7)">← Back</button>
+      <h2>8. What would you probably give up?</h2>
+
+      <label>If you join this activity, what is most likely to be affected?</label>
+      <select id="sacrifice">
+        <option value="">Select one</option>
+        <option value="2">Nothing important</option>
+        <option value="1">Some free time</option>
+        <option value="0">Sleep</option>
+        <option value="0">Study time</option>
+        <option value="1">Time with friends or family</option>
+        <option value="1">Another activity</option>
+      </select>
+
+      <button class="primary" onclick="showResult()">See My Result</button>
+    </section>
+
+    <!-- RESULT -->
+    <section id="s9" class="hidden">
+      <div class="summary">
+        <strong id="finalActivity"></strong>
+        <div id="finalInfo" class="muted" style="margin-top:5px;"></div>
+      </div>
+
+      <div id="overallResult" class="overall"></div>
+      <p id="overallText"></p>
+
+      <h3>Your breakdown</h3>
+
+      <div id="goalCard" class="result-card">
+        <div class="result-title">Goal Match</div>
+        <div id="goalResult"></div>
+      </div>
+
+      <div id="timeCard" class="result-card">
+        <div class="result-title">Time Fit</div>
+        <div id="timeResult"></div>
+      </div>
+
+      <div id="motivationCard" class="result-card">
+        <div class="result-title">Personal Motivation</div>
+        <div id="motivationResult"></div>
+      </div>
+
+      <div id="pressureCard" class="result-card">
+        <div class="result-title">Pressure Level</div>
+        <div id="pressureResult"></div>
+      </div>
+
+      <h3>Things to think about before deciding</h3>
+      <ul id="advice"></ul>
+
+      <button class="primary" onclick="restart()">Check Another Activity</button>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const stepNames = [
+  "Start",
+  "Activity",
+  "Goals",
+  "Goal match",
+  "Current commitments",
+  "Motivation",
+  "Social comparison",
+  "Career pressure",
+  "Personal limit",
+  "Result"
+];
+
+let data = {
+  activityName:"",
+  activityType:"",
+  activityHours:0,
+  duration:"",
+  goals:[],
+  goalMatches:[],
+  currentActivities:0,
+  currentHours:0,
+  freeHours:0,
+  motivations:[],
+  friendsQuestion:0,
+  comparisonQuestion:0,
+  careerPressure:0,
+  careerMatch:0,
+  sacrifice:0
+};
+
+function go(step){
+  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+  document.getElementById("s"+step).classList.remove("hidden");
+  document.getElementById("bar").style.width = (step/9*100) + "%";
+  document.getElementById("stepText").textContent = stepNames[step];
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function saveActivity(){
+  const name = document.getElementById("activityName").value.trim();
+  const type = document.getElementById("activityType").value;
+  const hours = parseFloat(document.getElementById("activityHours").value);
+  const duration = document.getElementById("duration").value;
+
+  if(!name || !type || isNaN(hours) || !duration){
+    alert("Please complete all fields.");
+    return;
+  }
+
+  data.activityName = name;
+  data.activityType = type;
+  data.activityHours = hours;
+  data.duration = duration;
+
+  go(2);
+}
+
+function saveGoals(){
+  const checked = [...document.querySelectorAll("#goalChoices input:checked")];
+
+  if(checked.length === 0){
+    alert("Please choose at least one goal.");
+    return;
+  }
+
+  if(checked.length > 3){
+    alert("Please choose no more than 3 goals.");
+    return;
+  }
+
+  data.goals = checked.map(c => c.value);
+
+  const area = document.getElementById("goalArea");
+  area.innerHTML = "";
+
+  data.goals.forEach((goal, index) => {
+    const div = document.createElement("div");
+    div.className = "box";
+    div.innerHTML = `
+      <strong>${goal}</strong>
+      <label>How well does ${data.activityName} support this goal?</label>
+      <select class="goalMatch">
+        <option value="">Select one</option>
+        <option value="2">Strongly</option>
+        <option value="1">Somewhat</option>
+        <option value="0">Not really</option>
+      </select>
+    `;
+    area.appendChild(div);
+  });
+
+  go(3);
+}
+
+function saveGoalMatch(){
+  const selects = [...document.querySelectorAll(".goalMatch")];
+
+  if(selects.some(s => s.value === "")){
+    alert("Please rate every goal.");
+    return;
+  }
+
+  data.goalMatches = selects.map(s => Number(s.value));
+  go(4);
+}
+
+function saveTime(){
+  const currentActivities = document.getElementById("currentActivities").value;
+  const currentHours = document.getElementById("currentHours").value;
+  const freeHours = document.getElementById("freeHours").value;
+
+  if(currentActivities === "" || currentHours === "" || freeHours === ""){
+    alert("Please complete all fields.");
+    return;
+  }
+
+  data.currentActivities = Number(currentActivities);
+  data.currentHours = Number(currentHours);
+  data.freeHours = Number(freeHours);
+
+  go(5);
+}
+
+function saveMotivation(){
+  const checked = [...document.querySelectorAll("#motives input:checked")];
+
+  if(checked.length === 0){
+    alert("Please select at least one reason.");
+    return;
+  }
+
+  data.motivations = checked.map(c => c.value);
+  go(6);
+}
+
+function saveComparison(){
+  const a = document.getElementById("friendsQuestion").value;
+  const b = document.getElementById("comparisonQuestion").value;
+
+  if(a === "" || b === ""){
+    alert("Please answer both questions.");
+    return;
+  }
+
+  data.friendsQuestion = Number(a);
+  data.comparisonQuestion = Number(b);
+
+  go(7);
+}
+
+function saveCareer(){
+  const a = document.getElementById("careerPressure").value;
+  const b = document.getElementById("careerMatch").value;
+
+  if(a === "" || b === ""){
+    alert("Please answer both questions.");
+    return;
+  }
+
+  data.careerPressure = Number(a);
+  data.careerMatch = Number(b);
+
+  go(8);
+}
+
+function average(arr){
+  return arr.reduce((a,b)=>a+b,0) / arr.length;
+}
+
+function setCard(id, level){
+  const el = document.getElementById(id);
+  el.classList.remove("good","warn","bad");
+  el.classList.add(level);
+}
+
+function showResult(){
+  const sacrifice = document.getElementById("sacrifice").value;
+
+  if(sacrifice === ""){
+    alert("Please choose one option.");
+    return;
+  }
+
+  data.sacrifice = Number(sacrifice);
+
+  const goalScore = average(data.goalMatches);
+
+  let timeScore = 0;
+  if(data.activityHours <= data.freeHours * 0.6){
+    timeScore = 2;
+  } else if(data.activityHours <= data.freeHours){
+    timeScore = 1;
+  }
+
+  const positiveMotives = ["interest","goal","learning"];
+  const pressureMotives = ["friends","notEnough","comparison","expectation","fomo"];
+
+  const positiveCount = data.motivations.filter(m => positiveMotives.includes(m)).length;
+  const pressureCount = data.motivations.filter(m => pressureMotives.includes(m)).length;
+
+  let motivationScore = 1;
+  if(positiveCount > pressureCount) motivationScore = 2;
+  if(pressureCount > positiveCount) motivationScore = 0;
+
+  const comparisonScore = (data.friendsQuestion + data.comparisonQuestion) / 2;
+  const pressureScore = (comparisonScore + data.careerPressure + data.sacrifice) / 3;
+
+  const total =
+    goalScore +
+    timeScore +
+    motivationScore +
+    pressureScore +
+    data.careerMatch;
+
+  document.getElementById("finalActivity").textContent = data.activityName;
+  document.getElementById("finalInfo").textContent =
+    `${data.activityType} • ${data.activityHours} hrs/week • ${data.duration}`;
+
+  let goalText, goalLevel;
+  if(goalScore >= 1.5){
+    goalText = "Strong — this activity supports most of your main goals.";
+    goalLevel = "good";
+  } else if(goalScore >= 0.75){
+    goalText = "Medium — this activity supports some of your goals.";
+    goalLevel = "warn";
+  } else {
+    goalText = "Weak — this activity does not strongly support your current goals.";
+    goalLevel = "bad";
+  }
+
+  let timeText, timeLevel;
+  if(timeScore === 2){
+    timeText = "Comfortable — this activity fits within the free time you entered.";
+    timeLevel = "good";
+  } else if(timeScore === 1){
+    timeText = "Tight — it may fit, but your schedule could become difficult during busy weeks.";
+    timeLevel = "warn";
+  } else {
+    timeText = "Too much — the activity requires more time than you currently have available.";
+    timeLevel = "bad";
+  }
+
+  let motivationText, motivationLevel;
+  if(motivationScore === 2){
+    motivationText = "Mostly personal — your reasons are mainly based on interest, learning, or your own goals.";
+    motivationLevel = "good";
+  } else if(motivationScore === 1){
+    motivationText = "Mixed — both personal reasons and outside pressure seem to influence your decision.";
+    motivationLevel = "warn";
+  } else {
+    motivationText = "Mostly outside pressure — comparison or expectations seem to play a large role.";
+    motivationLevel = "bad";
+  }
+
+  let pressureText, pressureLevel;
+  if(pressureScore >= 1.5){
+    pressureText = "Low — your decision seems mostly independent of outside pressure.";
+    pressureLevel = "good";
+  } else if(pressureScore >= 0.75){
+    pressureText = "Medium — some comparison or outside expectations may be affecting your decision.";
+    pressureLevel = "warn";
+  } else {
+    pressureText = "High — outside pressure seems to be affecting your decision strongly.";
+    pressureLevel = "bad";
+  }
+
+  document.getElementById("goalResult").textContent = goalText;
+  document.getElementById("timeResult").textContent = timeText;
+  document.getElementById("motivationResult").textContent = motivationText;
+  document.getElementById("pressureResult").textContent = pressureText;
+
+  setCard("goalCard", goalLevel);
+  setCard("timeCard", timeLevel);
+  setCard("motivationCard", motivationLevel);
+  setCard("pressureCard", pressureLevel);
+
+  let overall, overallText;
+
+  if(total >= 7 && goalScore >= 1 && timeScore >= 1 && motivationScore >= 1){
+    overall = "Good Fit";
+    overallText =
+      "This activity seems to fit your goals, available time, and personal reasons for joining. It may be worth trying if the commitment stays close to what you expect.";
+  } else if(total >= 4.5){
+    overall = "Think Again";
+    overallText =
+      "There are some good reasons to join, but there are also a few concerns. Before committing, think about whether this activity is worth the time and whether the decision is really based on your own goals.";
+  } else {
+    overall = "Probably Not Right Now";
+    overallText =
+      "This activity may not fit your current goals, time, or reasons for joining. That does not mean the activity is bad. It may simply not be the right choice for you right now.";
+  }
+
+  document.getElementById("overallResult").textContent = overall;
+  document.getElementById("overallText").textContent = overallText;
+
+  const advice = [];
+
+  if(goalScore < 1){
+    advice.push("Ask yourself what this activity would actually add to your current goals.");
+  }
+
+  if(timeScore === 0){
+    advice.push(`The activity needs ${data.activityHours} hours per week, but you entered only ${data.freeHours} free hours.`);
+  }
+
+  if(pressureCount > positiveCount){
+    advice.push("Several of your reasons for joining come from comparison, expectations, or fear of missing out.");
+  }
+
+  if(data.friendsQuestion === 0){
+    advice.push("You said you probably would not join if your friends were not joining.");
+  }
+
+  if(data.comparisonQuestion === 0){
+    advice.push("Your decision may be influenced by how involved other students seem to be.");
+  }
+
+  if(data.careerPressure === 0 && data.careerMatch < 2){
+    advice.push("You feel career pressure, but this activity may not strongly connect to your actual career goals.");
+  }
+
+  if(data.sacrifice === 0){
+    advice.push("Joining this activity may cost you sleep or study time.");
+  }
+
+  if(advice.length === 0){
+    advice.push("Your answers are fairly consistent. If possible, try the activity before making a long-term commitment.");
+  }
+
+  const list = document.getElementById("advice");
+  list.innerHTML = "";
+
+  advice.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    list.appendChild(li);
+  });
+
+  go(9);
+}
+
+function restart(){
+  location.reload();
+}
+</script>
+
+</body>
+</html>
